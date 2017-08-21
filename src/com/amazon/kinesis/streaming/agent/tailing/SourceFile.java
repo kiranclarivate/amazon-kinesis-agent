@@ -38,17 +38,32 @@ public class SourceFile {
     @Getter private final Path directory;
     @Getter private final Path filePattern;
     private final PathMatcher pathMatcher;
+    
 
     public SourceFile(FileFlow<?> flow, String filePattern) {
         this.flow = flow;
         // fileName
         Preconditions.checkArgument(!filePattern.endsWith("/"), "File name component is empty!");
-        Path filePath = FileSystems.getDefault().getPath(filePattern);
+       Path filePath = FileSystems.getDefault().getPath(filePattern);        
+       
         // TODO: this does not handle globs in directory component: e.g. /opt/*/logs/app.log, /opt/**/app.log*
         this.directory = filePath.getParent();
         validateDirectory(this.directory);
         this.filePattern = filePath.getFileName();
-        this.pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + this.filePattern.toString());
+        //Added for compatability with windows
+        String newPattern = "";
+        newPattern = this.filePattern.toString().replace("%", "*");
+        if(System.getProperty("os.name").startsWith("Windows")){
+        	
+        	this.pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + newPattern);
+        	
+        }
+        else{
+        	
+        	this.pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + this.filePattern.toString());
+        }
+        	
+       
     }
 
     /**
@@ -103,7 +118,7 @@ public class SourceFile {
 
     @Override
     public String toString() {
-        return this.directory + "/" + this.filePattern;
+        return this.directory + "/" + this.filePattern.toString().replace("%", "*");
     }
 
     /**

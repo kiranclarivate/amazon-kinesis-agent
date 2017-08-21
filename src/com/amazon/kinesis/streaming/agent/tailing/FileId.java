@@ -13,13 +13,20 @@
  */
 package com.amazon.kinesis.streaming.agent.tailing;
 
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.DosFileAttributes;
+import java.nio.file.attribute.UserDefinedFileAttributeView;
+
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+
+
+
 
 import com.google.common.base.Preconditions;
 
@@ -35,12 +42,16 @@ public class FileId {
      * @see #get(BasicFileAttributes)
      */
     public static FileId get(Path file) throws IOException {
+    	
         if (!Files.exists(file)) {
+        	
             return null;
         }
         Preconditions.checkArgument(Files.isRegularFile(file),
                 "Can only get ID for real files (no directories and symlinks): "
                         + file);
+       
+        
         BasicFileAttributes attr = Files.readAttributes(file,
                 BasicFileAttributes.class);
         return get(attr);
@@ -55,8 +66,27 @@ public class FileId {
      * @return
      * @throws IOException
      */
+   /** public static FileId get(BasicFileAttributes attr) throws IOException {
+    	
+    	if(attr.fileKey() != null){
+    		 return new FileId(attr.fileKey().toString());
+    	}
+        return new FileId("");
+    }**/
+    
     public static FileId get(BasicFileAttributes attr) throws IOException {
-        return new FileId(attr.fileKey().toString());
+    	//Added for compatability with windows
+    	if(System.getProperty("os.name").startsWith("Windows")){
+    		if(attr.lastModifiedTime() != null){
+       		 return new FileId(attr.lastModifiedTime().toString());
+    		}
+    	}
+     		 
+    	return new FileId(attr.fileKey().toString());
+    
+		
+    	
+       
     }
 
     public FileId(String id) {
