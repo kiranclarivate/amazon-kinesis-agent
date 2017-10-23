@@ -16,17 +16,22 @@ package com.amazon.kinesis.streaming.agent.tailing;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+import org.slf4j.Logger;
+
 import com.amazon.kinesis.streaming.agent.ByteBuffers;
+import com.amazon.kinesis.streaming.agent.Logging;
 import com.google.common.base.Preconditions;
 
 /**
  * Base implementation of an {@link IRecord} interface.
  */
 public abstract class AbstractRecord  implements IRecord {
+	private static final Logger LOGGER = Logging.getLogger(AbstractRecord.class);
     protected boolean shouldSkip = false;
     protected final ByteBuffer data;
     protected final TrackedFile file;
     protected final long startOffset;
+    protected final long endOffset;
 
     public AbstractRecord(TrackedFile file, long offset, ByteBuffer data) {
         Preconditions.checkArgument(offset >= 0,
@@ -38,6 +43,20 @@ public abstract class AbstractRecord  implements IRecord {
         this.data = data;
         this.file = file;
         this.startOffset = offset;
+        this.endOffset = 0;
+    }
+    
+    public AbstractRecord(TrackedFile file, long offset, ByteBuffer data,long eOffSet) {
+        Preconditions.checkArgument(offset >= 0,
+                "The offset of a record (%s) must be a non-negative integer (File: %s)",
+                offset, file);
+        if (data == null) {
+            skip();
+        }
+        this.data = data;
+        this.file = file;
+        this.startOffset = offset;
+        this.endOffset = eOffSet;
     }
 
     public AbstractRecord(TrackedFile file, long offset, byte[] data) {
@@ -56,6 +75,11 @@ public abstract class AbstractRecord  implements IRecord {
 
     @Override
     public long endOffset() {
+    	LOGGER.debug("startOffset:: "  + startOffset);
+    	LOGGER.debug("dataLength():: "  + dataLength());
+    	if(endOffset > 0){
+    		return startOffset + endOffset;
+    	}
         return startOffset + dataLength();
     }
 

@@ -29,8 +29,8 @@ public class FirehoseParser extends AbstractParser<FirehoseRecord> {
     }
 
     @Override
-    protected synchronized FirehoseRecord buildRecord(TrackedFile recordFile, ByteBuffer data, long offset) {
-        return new FirehoseRecord(recordFile, offset, data);
+    protected synchronized FirehoseRecord buildRecord(TrackedFile recordFile, ByteBuffer data, long offset,long endOffset) {
+        return new FirehoseRecord(recordFile, offset, data,endOffset);
     }
 
     @Override

@@ -465,16 +465,17 @@ public abstract class AbstractParser<R extends IRecord> implements IParser<R> {
 
     private R buildRecord(int offset, int length) {
         ByteBuffer data = ByteBuffers.getPartialView(currentBuffer, offset, length);
+        int endOffSetBeforeConversion = length;
         ++recordsFromCurrentBuffer;
         Preconditions.checkNotNull(currentBufferFile);
         
         R record = null;
         try {
-            record = buildRecord(currentBufferFile, convertData(data), toChannelOffset(offset));
+            record = buildRecord(currentBufferFile, convertData(data), toChannelOffset(offset),endOffSetBeforeConversion);
         } catch (DataConversionException e) {
             totalDataProcessingErrors.incrementAndGet();
             logger.warn("Cannot process input data: " + e.getMessage() + ", falling back to raw data.");
-            record = buildRecord(currentBufferFile, data, toChannelOffset(offset));
+            record = buildRecord(currentBufferFile, data, toChannelOffset(offset),endOffSetBeforeConversion);
         } finally {
             totalRecordsParsed.incrementAndGet();
         }
@@ -510,7 +511,7 @@ public abstract class AbstractParser<R extends IRecord> implements IParser<R> {
                 toChannelOffset(bufferOffset), reason);
     }
 
-    protected abstract R buildRecord(TrackedFile recordFile, ByteBuffer data, long offset);
+    protected abstract R buildRecord(TrackedFile recordFile, ByteBuffer data, long offset,long endOffSetBeforeConversion);
     protected abstract int getMaxRecordSize();
 
     @SuppressWarnings("serial")

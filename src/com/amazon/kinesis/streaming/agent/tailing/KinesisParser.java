@@ -29,7 +29,7 @@ public class KinesisParser extends AbstractParser<KinesisRecord> {
     }
 
     @Override
-    protected synchronized KinesisRecord buildRecord(TrackedFile recordFile, ByteBuffer data, long offset) {
+    protected synchronized KinesisRecord buildRecord(TrackedFile recordFile, ByteBuffer data, long offset,long endOffset) {
         return new KinesisRecord(recordFile, offset, data);
     }
 

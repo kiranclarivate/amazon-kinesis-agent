@@ -19,6 +19,9 @@ public class FirehoseRecord extends AbstractRecord {
     public FirehoseRecord(TrackedFile file, long offset, ByteBuffer data) {
         super(file, offset, data);
     }
+    public FirehoseRecord(TrackedFile file, long offset, ByteBuffer data,long endOffset) {
+        super(file, offset, data,endOffset);
+    }
 
     public FirehoseRecord(TrackedFile file, long offset, byte[] data) {
         super(file, offset, data);
