@@ -144,7 +144,7 @@ public class Logging {
                 // Clean it up here.
                 Path fallbackLog = Paths.get(CustomLog4jFallbackErrorHandler.getFallbackLogFile());
                 if (Files.exists(fallbackLog) && Files.size(fallbackLog) == 0)
-                    Files.delete(fallbackLog);
+                  //  Files.delete(fallbackLog);
             }
             initialized = true;
         }
