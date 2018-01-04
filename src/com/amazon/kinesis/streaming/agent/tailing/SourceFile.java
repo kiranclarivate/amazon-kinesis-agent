@@ -48,7 +48,18 @@ public class SourceFile {
         this.directory = filePath.getParent();
         validateDirectory(this.directory);
         this.filePattern = filePath.getFileName();
-        this.pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + this.filePattern.toString());
+      //Added for compatability with windows
+        String newPattern = "";
+        newPattern = this.filePattern.toString().replace("%", "*");
+        if(System.getProperty("os.name").startsWith("Windows")){
+        	
+        	this.pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + newPattern);
+        	
+        }
+        else{
+        	
+        	this.pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + this.filePattern.toString());
+        }
     }
 
     /**

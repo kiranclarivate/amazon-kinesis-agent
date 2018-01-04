@@ -143,8 +143,10 @@ public class Logging {
                 // Log4j creates the fallback file even if no fallback happened.
                 // Clean it up here.
                 Path fallbackLog = Paths.get(CustomLog4jFallbackErrorHandler.getFallbackLogFile());
-                if (Files.exists(fallbackLog) && Files.size(fallbackLog) == 0)
-                    Files.delete(fallbackLog);
+                if (Files.exists(fallbackLog) && Files.size(fallbackLog) == 0){
+                	// Files.delete(fallbackLog);
+                }
+                   
             }
             initialized = true;
         }

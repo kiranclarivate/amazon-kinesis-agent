@@ -55,8 +55,23 @@ public class FileId {
      * @return
      * @throws IOException
      */
-    public static FileId get(BasicFileAttributes attr) throws IOException {
+  /**  public static FileId get(BasicFileAttributes attr) throws IOException {
         return new FileId(attr.fileKey().toString());
+    }**/
+    
+    public static FileId get(BasicFileAttributes attr) throws IOException {
+    	//Added for compatability with windows
+    	if(System.getProperty("os.name").startsWith("Windows")){
+    		if(attr.lastModifiedTime() != null){
+       		 return new FileId(attr.lastModifiedTime().toString());
+    		}
+    	}
+     		 
+    	return new FileId(attr.fileKey().toString());
+    
+		
+    	
+       
     }
 
     public FileId(String id) {
