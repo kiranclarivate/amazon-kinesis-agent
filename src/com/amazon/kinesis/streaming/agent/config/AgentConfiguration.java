@@ -53,6 +53,9 @@ public class AgentConfiguration extends Configuration {
     static final String LOG_LEVEL_KEY = "log.level";
     static final String LOG_MAX_BACKUP_INDEX_KEY = "log.maxBackupIndex";
     static final String LOG_MAX_FILE_SIZE_KEY = "log.maxFileSize";
+	//Added for Linux compatability
+    public static final String PROXY_HOST = "proxyHost";//Added for Proxy
+    public static final String PROXY_PORT = "proxyPort";//Added for Proxy
 
     public AgentConfiguration(Map<String, Object> config) {
         super(config);
@@ -65,6 +68,15 @@ public class AgentConfiguration extends Configuration {
     public String accessKeyId() {
         return this.readString(CONFIG_ACCESS_KEY, null);
     }
+    //Added for Proxy-Linux compatability
+    public String getProxyHost(){
+        return this.readString(PROXY_HOST, null);
+    }
+    
+    public int getProxyPort(){
+        return this.readInteger(PROXY_PORT, null);
+    }
+    //Ended for Proxy
 
     public String secretKey() {
         return this.readString(CONFIG_SECRET_KEY, null);

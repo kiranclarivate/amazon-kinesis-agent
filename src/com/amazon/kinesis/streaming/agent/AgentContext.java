@@ -236,6 +236,12 @@ public class AgentContext extends AgentConfiguration implements IMetricsContext 
         config.setUseTcpKeepAlive(useTcpKeepAlive());
         config.setConnectionTTL(connectionTTLMillis());
         config.setUseGzip(useHttpGzip());
+        if(!System.getProperty("os.name").startsWith("Windows")){
+        	//Added for linux compatability
+            config.setProxyHost(getProxyHost());
+            config.setProxyPort(getProxyPort());
+        }
+		
         return config;
     }
 
