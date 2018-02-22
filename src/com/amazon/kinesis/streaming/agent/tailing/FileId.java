@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
 
 /**
  * Abstraction of a file identifier (independent from path). Current implementation
@@ -30,6 +31,7 @@ import com.google.common.base.Preconditions;
 @EqualsAndHashCode
 public class FileId {
     @Getter private final String id;
+    
 
     /**
      * @see #get(BasicFileAttributes)
@@ -43,7 +45,7 @@ public class FileId {
                         + file);
         BasicFileAttributes attr = Files.readAttributes(file,
                 BasicFileAttributes.class);
-        return get(attr);
+        return get(attr,file.getFileName().toString());//Changed for windows
     }
 
     /**
@@ -59,11 +61,11 @@ public class FileId {
         return new FileId(attr.fileKey().toString());
     }**/
     
-    public static FileId get(BasicFileAttributes attr) throws IOException {
+    public static FileId get(BasicFileAttributes attr,String fileNm) throws IOException {//Changed for Windows
     	//Added for compatability with windows
     	if(System.getProperty("os.name").startsWith("Windows")){
     		if(attr.lastModifiedTime() != null){
-       		 return new FileId(attr.lastModifiedTime().toString());
+       		 return new FileId(attr.lastModifiedTime().toString().concat(fileNm));//CHANGED for Windows
     		}
     	}
      		 
